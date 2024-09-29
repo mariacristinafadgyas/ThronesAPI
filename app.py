@@ -7,7 +7,9 @@ app = Flask(__name__)
 
 @app.route('/api/characters', methods=['GET'])
 def get_characters():
-    """Returns a JSON file containing the list of characters from a Game of Thrones."""
+    """Returns a JSON file containing the list of characters from a Game of Thrones,
+    supporting pagination through the 'limit' and 'skip' query parameters. If these
+    parameters are not provided, a random selection of 20 characters is returned by default."""
 
     characters = read_data('characters.json')
 
@@ -41,6 +43,21 @@ def get_characters():
     paginated_characters = characters[skip:skip + limit]
 
     return jsonify(paginated_characters), 200
+
+
+@app.route('/api/characters/<int:character_id>', methods=['GET'])
+def get_character_by_id(character_id):
+    """Returns a JSON representation of the character whose 'id'
+    matches the provided 'character_id'. If the character is not found,
+    a 404 error is returned with an appropriate message."""
+
+    characters = read_data('characters.json')
+
+    for character in characters:
+        if character['id'] == character_id:
+            return jsonify(character), 200
+
+    return jsonify({"error": f"Character with ID {character_id} not found."}), 400
 
 
 if __name__ == '__main__':
