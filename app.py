@@ -9,9 +9,53 @@ app = Flask(__name__)
 def get_characters():
     """Returns a JSON file containing the list of characters from a Game of Thrones,
     supporting pagination through the 'limit' and 'skip' query parameters. If these
-    parameters are not provided, a random selection of 20 characters is returned by default."""
+    parameters are not provided, a random selection of 20 characters is returned by default.
+    Filtering by attributes such as age, house, and role is supported, allowing multiple
+    filters to be applied simultaneously. Additionally, characters can be sorted in
+    ascending or descending order by any specified attribute."""
 
     characters = read_data('characters.json')
+
+    # Filtering
+    filter_params = {
+        'age': request.args.get('age'),
+        'animal': request.args.get('animal'),
+        'death': request.args.get('death'),
+        'house': request.args.get('house'),
+        'name': request.args.get('name'),
+        'nickname': request.args.get('nickname'),
+        'role': request.args.get('role'),
+        'strength': request.args.get('strength'),
+        'symbol': request.args.get('symbol'),
+        'age_more_than': request.args.get('age_more_than'),
+        'age_less_than': request.args.get('age_less_than')
+    }
+
+    filtered_characters = characters
+    for key, value in filter_params.items():
+        if value:
+            if key in ['age', 'age_more_than', 'age_less_than']:
+                try:
+                    value = int(value)
+                except ValueError:
+                    return jsonify({"error": f"Invalid {key} parameter. Age must be an integer."}), 400
+
+                if key == 'age_more_than':
+                    filtered_characters = [character for character in filtered_characters
+                                           if character['age'] is not None and character['age'] >= value]
+                elif key == 'age_less_than':
+                    filtered_characters = [character for character in filtered_characters
+                                           if character['age'] is not None and character['age'] <= value]
+                elif key == 'age':
+                    filtered_characters = [character for character in filtered_characters
+                                           if character['age'] is not None and character['age'] == value]
+            else:
+                filtered_characters = [character for character in filtered_characters
+                                       if character.get(key) is not None
+                                       and value.lower() in character[key].lower()]
+
+    if any(filter_params.values()):
+        return jsonify(filtered_characters), 200
 
     # Sort by any of the character's attributes
     sort_asc = request.args.get('sort_asc')
