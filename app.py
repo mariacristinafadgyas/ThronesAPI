@@ -69,7 +69,8 @@ def get_characters():
         # return jsonify(sorted_characters), 200
 
     elif sort_desc in attributes:
-        sorted_characters = sorted(filtered_characters, key=lambda x: (x.get(sort_desc) is None, x.get(sort_desc)), reverse=True)
+        sorted_characters = sorted(filtered_characters,
+                                   key=lambda x: (x.get(sort_desc) is None, x.get(sort_desc)), reverse=True)
         # return jsonify(sorted_characters), 200
     else:
         sorted_characters = filtered_characters
@@ -98,7 +99,8 @@ def get_characters():
         return jsonify({"message": f"Skip is exceeding the length of the"
                                    f" characters database (Total characters: {len(sorted_characters)})"}), 400
 
-    if 'limit' not in request.args and 'skip' not in request.args and not sort_asc and not sort_desc and not any(filter_params.values()):
+    if ('limit' not in request.args and 'skip' not in request.args and not sort_asc
+            and not sort_desc and not any(filter_params.values())):
         random_characters = random.sample(characters, min(20, len(characters)))
         return jsonify(random_characters), 200
 
@@ -129,7 +131,7 @@ def add_character():
 
     characters = read_data('characters.json')
 
-    new_character = request.get_json() # Retrieves data from the request
+    new_character = request.get_json()  # Retrieves data from the request
 
     required_fields = {
         'name': str,
@@ -152,8 +154,24 @@ def add_character():
 
     new_character['id'] = max([char['id'] for char in characters]) + 1 if characters else 1
     characters.append(new_character)
-    sync_data('characters.json', characters) # For in-memory saving of a new character comment this line
+    sync_data('characters.json', characters)  # For in-memory saving of a new character comment this line
     return jsonify(new_character), 200
+
+
+@app.route('/api/characters/<int:id>', methods=['DELETE'])
+def delete_character(id):
+    """Deletes a character based on the ID specified in the URL. If the character
+     exists, it is deleted, if it does not exist, an error message is returned."""
+
+    characters = read_data('characters.json')
+
+    for character in characters:
+        if character['id'] == id:
+            characters.remove(character)
+            sync_data('characters.json', characters)
+            return jsonify({"message": f"Character with id {id} has been deleted"
+                                       f" successfully."}), 200
+    return jsonify({"message": f"Character with id {id} not found."}), 404
 
 
 if __name__ == '__main__':
