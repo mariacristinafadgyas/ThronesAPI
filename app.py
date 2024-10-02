@@ -174,5 +174,50 @@ def delete_character(id):
     return jsonify({"message": f"Character with id {id} not found."}), 404
 
 
+@app.route('/api/characters/<int:id>', methods=['PUT'])
+def update_character(id):
+    """Updates the attributes of an existing character. If the character is
+    found, it updates only the fields provided in the request body, leaving
+    any unspecified fields unchanged. """
+
+    characters = read_data('characters.json')
+    data = request.get_json()
+
+    required_fields = {
+        'name': str,
+        'age': int,
+        'death': str,
+        'house': str,
+        'nickname': str,
+        'role': str,
+        'strength': str,
+        'symbol': str
+    }
+
+    for field, expected_type in required_fields.items():
+        if field in data and data[field] is not None:
+            if not isinstance(data[field], expected_type):
+                return jsonify({"error": f"'{field}' must be of type {expected_type.__name__}."}), 400
+        elif field in data and data[field] is None:
+            data[field] = None   # Allow null values if explicitly sent
+
+    for character in characters:
+        if character['id'] == id:
+            character['name'] = data.get('name', character['name'])
+            character['age'] = data.get('age', character['age'])
+            character['death'] = data.get('death', character['death'])
+            character['house'] = data.get('house', character['house'])
+            character['nickname'] = data.get('nickname', character['nickname'])
+            character['role'] = data.get('role', character['role'])
+            character['strength'] = data.get('strength', character['strength'])
+            character['symbol'] = data.get('symbol', character['symbol'])
+
+            sync_data('characters.json', characters)
+
+            return jsonify({"message": f"Character with id {id} has been updated "
+                                       f"successfully.", "id": id}), 200
+    return jsonify({"error": f"Character with id {id} not found!"}), 404
+
+
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000, debug=True)
