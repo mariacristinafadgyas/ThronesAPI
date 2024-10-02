@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request
 import random
-from storage import read_data
+from storage import read_data, sync_data
 
 app = Flask(__name__)
 
@@ -120,6 +120,40 @@ def get_character_by_id(character_id):
             return jsonify(character), 200
 
     return jsonify({"error": f"Character with ID {character_id} not found."}), 400
+
+
+@app.route('/api/characters', methods=['POST'])
+def add_character():
+    """Adds a new character to the character list, ensuring all required fields
+    are filled and have the correct data types."""
+
+    characters = read_data('characters.json')
+
+    new_character = request.get_json() # Retrieves data from the request
+
+    required_fields = {
+        'name': str,
+        'age': int,
+        'animal': str,
+        'death': str,
+        'house': str,
+        'nickname': str,
+        'role': str,
+        'strength': str,
+        'symbol': str
+    }
+
+    for field, field_type in required_fields.items():
+        if field not in new_character:
+            new_character[field] = None
+
+        if new_character[field] is not None and not isinstance(new_character[field], field_type):
+            return jsonify({"error": f"'{field}' must be of type {field_type.__name__} or null."}), 400
+
+    new_character['id'] = max([char['id'] for char in characters]) + 1 if characters else 1
+    characters.append(new_character)
+    sync_data('characters.json', characters) # For in-memory saving of a new character comment this line
+    return jsonify(new_character), 200
 
 
 if __name__ == '__main__':
