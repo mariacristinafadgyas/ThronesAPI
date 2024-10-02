@@ -54,9 +54,6 @@ def get_characters():
                                        if character.get(key) is not None
                                        and value.lower() in character[key].lower()]
 
-    if any(filter_params.values()):
-        return jsonify(filtered_characters), 200
-
     # Sort by any of the character's attributes
     sort_asc = request.args.get('sort_asc')
     sort_desc = request.args.get('sort_desc')
@@ -68,12 +65,14 @@ def get_characters():
                                  "/ 'strength' / 'symbol'"}), 400
 
     if sort_asc in attributes:
-        sorted_characters = sorted(characters, key=lambda x: (x.get(sort_asc) is None, x.get(sort_asc)))
-        return jsonify(sorted_characters), 200
+        sorted_characters = sorted(filtered_characters, key=lambda x: (x.get(sort_asc) is None, x.get(sort_asc)))
+        # return jsonify(sorted_characters), 200
 
-    if sort_desc in attributes:
-        sorted_characters = sorted(characters, key=lambda x: (x.get(sort_desc) is None, x.get(sort_desc)), reverse=True)
-        return jsonify(sorted_characters), 200
+    elif sort_desc in attributes:
+        sorted_characters = sorted(filtered_characters, key=lambda x: (x.get(sort_desc) is None, x.get(sort_desc)), reverse=True)
+        # return jsonify(sorted_characters), 200
+    else:
+        sorted_characters = filtered_characters
 
     # Pagination
     limit = 20
@@ -95,15 +94,15 @@ def get_characters():
         except ValueError:
             return jsonify({"error": "Invalid skip parameter. Must be an integer."}), 400
 
-    if skip >= len(characters):
+    if skip >= len(sorted_characters):
         return jsonify({"message": f"Skip is exceeding the length of the"
-                                   f" characters database (Total characters: {len(characters)})"}), 400
+                                   f" characters database (Total characters: {len(sorted_characters)})"}), 400
 
-    if 'limit' not in request.args and 'skip' not in request.args and not sort_asc and not sort_desc:
+    if 'limit' not in request.args and 'skip' not in request.args and not sort_asc and not sort_desc and not any(filter_params.values()):
         random_characters = random.sample(characters, min(20, len(characters)))
         return jsonify(random_characters), 200
 
-    paginated_characters = characters[skip:skip + limit]
+    paginated_characters = sorted_characters[skip:skip + limit]
 
     return jsonify(paginated_characters), 200
 
