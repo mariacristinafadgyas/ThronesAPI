@@ -5,6 +5,9 @@ from storage import read_data, sync_data
 app = Flask(__name__)
 
 
+VALID_ATTRIBUTES = ['age', 'animal', 'death', 'house', 'name', 'nickname', 'role', 'strength', 'symbol']
+
+
 @app.route('/api/characters', methods=['GET'])
 def get_characters():
     """Returns a JSON file containing the list of characters from a Game of Thrones,
@@ -30,6 +33,12 @@ def get_characters():
         'age_more_than': request.args.get('age_more_than'),
         'age_less_than': request.args.get('age_less_than')
     }
+
+    # Validates that all filter parameters are valid attributes
+    for key in request.args:
+        if (key not in VALID_ATTRIBUTES and
+                key not in ['age_more_than', 'age_less_than', 'limit', 'skip', 'sort_asc', 'sort_desc']):
+            return jsonify({"error": f"Invalid filter attribute: '{key}' is not a valid character attribute."}), 400
 
     filtered_characters = characters
     for key, value in filter_params.items():
@@ -57,18 +66,17 @@ def get_characters():
     # Sort by any of the character's attributes
     sort_asc = request.args.get('sort_asc')
     sort_desc = request.args.get('sort_desc')
-    attributes = ['age', 'animal', 'death', 'house', 'id', 'name', 'nickname', 'role', 'strength', 'symbol']
 
-    if (sort_asc and sort_asc not in attributes) or (sort_desc and sort_desc not in attributes):
+    if (sort_asc and sort_asc not in VALID_ATTRIBUTES) or (sort_desc and sort_desc not in VALID_ATTRIBUTES):
         return jsonify({"error": "To sort please select one of these attributes: 'age' / 'animal' /"
                                  " 'death' / 'house' / 'id' / 'name' / 'nickname' / 'role' "
                                  "/ 'strength' / 'symbol'"}), 400
 
-    if sort_asc in attributes:
+    if sort_asc in VALID_ATTRIBUTES:
         sorted_characters = sorted(filtered_characters, key=lambda x: (x.get(sort_asc) is None, x.get(sort_asc)))
         # return jsonify(sorted_characters), 200
 
-    elif sort_desc in attributes:
+    elif sort_desc in VALID_ATTRIBUTES:
         sorted_characters = sorted(filtered_characters,
                                    key=lambda x: (x.get(sort_desc) is None, x.get(sort_desc)), reverse=True)
         # return jsonify(sorted_characters), 200
@@ -96,8 +104,11 @@ def get_characters():
             return jsonify({"error": "Invalid skip parameter. Must be an integer."}), 400
 
     if skip >= len(sorted_characters):
-        return jsonify({"message": f"Skip is exceeding the length of the"
+        return jsonify({"error": f"Skip is exceeding the length of the"
                                    f" characters database (Total characters: {len(sorted_characters)})"}), 400
+
+    if skip + limit > sorted_characters:
+        return jsonify({"error": "Requested page exceeds available characters."}), 400
 
     if ('limit' not in request.args and 'skip' not in request.args and not sort_asc
             and not sort_desc and not any(filter_params.values())):
@@ -130,7 +141,6 @@ def add_character():
     are filled and have the correct data types."""
 
     characters = read_data('characters.json')
-
     new_character = request.get_json()  # Retrieves data from the request
 
     required_fields = {
@@ -176,7 +186,7 @@ def delete_character(id):
 
 @app.route('/api/characters/<int:id>', methods=['PUT'])
 def update_character(id):
-    """Updates the attributes of an existing character. If the character is
+    """Updates the attributes of an existing character by ID. If the character is
     found, it updates only the fields provided in the request body, leaving
     any unspecified fields unchanged. """
 
