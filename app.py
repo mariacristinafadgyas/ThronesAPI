@@ -37,11 +37,11 @@ def token_required(f):
         token = request.headers.get('Authorization')
         # print(f"Token received: {token}")
 
+        if not token or not token.startswith('Bearer '):
+            return jsonify({'message': 'Token is missing or invalid format'}), 401
+
         if token.startswith('Bearer '):
             token = token.split(' ')[1]  # Extract the token part only
-
-        if not token:
-            return jsonify({'message': 'Token is missing'}), 401
 
         try:
             # Decode the JWT token
@@ -178,7 +178,7 @@ def get_characters(payload):
 
     if skip >= len(sorted_characters):
         return jsonify({"error": f"Skip is exceeding the length of the"
-                                   f" characters database (Total characters: {len(sorted_characters)})"}), 400
+                                 f" characters database (Total characters: {len(sorted_characters)})"}), 400
 
     if skip + limit > len(sorted_characters):
         return jsonify({"error": "Requested page exceeds available characters."}), 400
