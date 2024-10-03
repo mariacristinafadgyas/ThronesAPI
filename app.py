@@ -1,15 +1,88 @@
+import datetime
+from dotenv import load_dotenv
 from flask import Flask, jsonify, request
+from functools import wraps
+import jwt
+import os
 import random
 from storage import read_data, sync_data
+
+# Loads and sets the environment variables
+load_dotenv()
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 app = Flask(__name__)
 
 
 VALID_ATTRIBUTES = ['age', 'animal', 'death', 'house', 'name', 'nickname', 'role', 'strength', 'symbol']
+USERS = read_data('users.json')
+
+
+def token_required(f):
+    """ Middleware (decorator) to protect routes by requiring a valid JWT token.
+    Ensures that an incoming request contains a valid JSON Web Token (JWT) in the
+    'Authorization' header. It verifies the token's signature and checks if it is
+    expired or invalid. If the token is missing or invalid, the request is denied
+    with a 401 Unauthorized response. If the token is valid, the decoded payload
+    (containing user information such as 'username' and 'role') is passed to the
+    route handler as a parameter, but no role-based access control is enforced in
+    this function. It takes f (which is the protected route function) as an argument."""
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        """The decorated function is the inner function that will actually wrap around
+        the protected route. It receives the same arguments (*args, **kwargs) that the
+        protected route would have received."""
+
+        # Extracts the JWT from the Authorization header of the incoming request
+        token = request.headers.get('Authorization')
+        # print(f"Token received: {token}")
+
+        if token.startswith('Bearer '):
+            token = token.split(' ')[1]  # Extract the token part only
+
+        if not token:
+            return jsonify({'message': 'Token is missing'}), 401
+
+        try:
+            # Decode the JWT token
+            payload = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            return jsonify({'message': 'Token has expired'}), 401
+        except jwt.InvalidTokenError:
+            return jsonify({'message': 'Invalid token'}), 401
+
+        # Pass the payload to the route function
+        return f(payload, *args, **kwargs)
+
+    return decorated
+
+
+@app.route('/login', methods=['POST'])
+def login():
+    """Login endpoint to authenticate users and return a JWT."""
+    auth_data = request.get_json()
+
+    username = auth_data.get('username')
+    password = auth_data.get('password')
+
+    if username in USERS and USERS[username]['password'] == password:
+        # JWT payload creation
+        payload = {
+            'username': username,
+            'role': USERS[username]['role'],
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1)  # Token expires in 1 hour
+        }
+
+        token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
+
+        return jsonify({'token': token}), 200
+    else:
+        return jsonify({'message': 'Invalid username or password'}), 401
 
 
 @app.route('/api/characters', methods=['GET'])
-def get_characters():
+@token_required
+def get_characters(payload):
     """Returns a JSON file containing the list of characters from a Game of Thrones,
     supporting pagination through the 'limit' and 'skip' query parameters. If these
     parameters are not provided, a random selection of 20 characters is returned by default.
@@ -107,7 +180,7 @@ def get_characters():
         return jsonify({"error": f"Skip is exceeding the length of the"
                                    f" characters database (Total characters: {len(sorted_characters)})"}), 400
 
-    if skip + limit > sorted_characters:
+    if skip + limit > len(sorted_characters):
         return jsonify({"error": "Requested page exceeds available characters."}), 400
 
     if ('limit' not in request.args and 'skip' not in request.args and not sort_asc
@@ -121,7 +194,8 @@ def get_characters():
 
 
 @app.route('/api/characters/<int:character_id>', methods=['GET'])
-def get_character_by_id(character_id):
+@token_required
+def get_character_by_id(payload, character_id):
     """Returns a JSON representation of the character whose 'id'
     matches the provided 'character_id'. If the character is not found,
     a 404 error is returned with an appropriate message."""
@@ -136,7 +210,8 @@ def get_character_by_id(character_id):
 
 
 @app.route('/api/characters', methods=['POST'])
-def add_character():
+@token_required
+def add_character(payload):
     """Adds a new character to the character list, ensuring all required fields
     are filled and have the correct data types."""
 
@@ -169,7 +244,8 @@ def add_character():
 
 
 @app.route('/api/characters/<int:id>', methods=['DELETE'])
-def delete_character(id):
+@token_required
+def delete_character(payload, id):
     """Deletes a character based on the ID specified in the URL. If the character
      exists, it is deleted, if it does not exist, an error message is returned."""
 
@@ -185,7 +261,8 @@ def delete_character(id):
 
 
 @app.route('/api/characters/<int:id>', methods=['PUT'])
-def update_character(id):
+@token_required
+def update_character(payload, id):
     """Updates the attributes of an existing character by ID. If the character is
     found, it updates only the fields provided in the request body, leaving
     any unspecified fields unchanged. """
