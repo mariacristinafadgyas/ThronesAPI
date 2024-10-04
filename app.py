@@ -1,6 +1,7 @@
 import datetime
 from dotenv import load_dotenv
 from flask import Flask, jsonify, request
+from flask_swagger_ui import get_swaggerui_blueprint
 from functools import wraps
 import jwt
 import os
@@ -57,7 +58,7 @@ def token_required(f):
     return decorated
 
 
-@app.route('/login', methods=['POST'])
+@app.route('/api/login', methods=['POST'])
 def login():
     """Login endpoint to authenticate users and return a JWT."""
     auth_data = request.get_json()
@@ -180,8 +181,8 @@ def get_characters(payload):
         return jsonify({"error": f"Skip is exceeding the length of the"
                                  f" characters database (Total characters: {len(sorted_characters)})"}), 400
 
-    if skip + limit > len(sorted_characters):
-        return jsonify({"error": "Requested page exceeds available characters."}), 400
+    # if skip + limit > len(sorted_characters):
+    #     return jsonify({"error": "Requested page exceeds available characters."}), 400
 
     if ('limit' not in request.args and 'skip' not in request.args and not sort_asc
             and not sort_desc and not any(filter_params.values())):
@@ -273,6 +274,7 @@ def update_character(payload, id):
     required_fields = {
         'name': str,
         'age': int,
+        'animal': str,
         'death': str,
         'house': str,
         'nickname': str,
@@ -292,6 +294,7 @@ def update_character(payload, id):
         if character['id'] == id:
             character['name'] = data.get('name', character['name'])
             character['age'] = data.get('age', character['age'])
+            character['animal'] = data.get('animal', character['animal'])
             character['death'] = data.get('death', character['death'])
             character['house'] = data.get('house', character['house'])
             character['nickname'] = data.get('nickname', character['nickname'])
@@ -304,6 +307,19 @@ def update_character(payload, id):
             return jsonify({"message": f"Character with id {id} has been updated "
                                        f"successfully.", "id": id}), 200
     return jsonify({"error": f"Character with id {id} not found!"}), 404
+
+
+SWAGGER_URL = "/api/docs"  # swagger endpoint e.g. HTTP://localhost:5002/api/docs
+API_URL = "/static/swagger_data.json"
+
+swagger_ui_blueprint = get_swaggerui_blueprint(
+    SWAGGER_URL,
+    API_URL,
+    config={
+        'app_name': 'ThronesAPI'
+    }
+)
+app.register_blueprint(swagger_ui_blueprint, url_prefix=SWAGGER_URL)
 
 
 if __name__ == '__main__':

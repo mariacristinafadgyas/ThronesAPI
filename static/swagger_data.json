@@ -1,0 +1,350 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "ThronesAPI",
+    "description": "Game of Thrones character API. Manage and retrieve Game of Thrones characters through this API.",
+    "version": "1.0.0"
+  },
+  "host": "localhost:5000",
+  "basePath": "/api",
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/login": {
+      "post": {
+        "summary": "User Login",
+        "description": "Authenticate users and return a JWT token for authorization.",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "User login details.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "username": {
+                  "type": "string",
+                  "example": "jane"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "pass456#"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful login, JWT token returned.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "token": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid username or password."
+          }
+        }
+      }
+    },
+    "/characters": {
+      "get": {
+        "summary": "Get Characters",
+        "description": "Retrieve a list of characters, filtered by various attributes (like age, house, etc.), with pagination and sorting.",
+        "parameters": [
+          {
+            "name": "age",
+            "in": "query",
+            "type": "integer",
+            "description": "Filter characters by age."
+          },
+          {
+            "name": "age_more_than",
+            "in": "query",
+            "type": "integer",
+            "description": "Returns all characters with an age greater than or equal to the age provided as a filter."
+          },
+          {
+            "name": "age_less_than",
+            "in": "query",
+            "type": "integer",
+            "description": "Returns all characters with an age less than or equal to the age provided as a filter."
+          },
+          {
+            "name": "animal",
+            "in": "query",
+            "type": "string",
+            "description": "Filter characters by animal."
+          },
+          {
+            "name": "death",
+            "in": "query",
+            "type": "string",
+            "description": "Filter characters by death."
+          },
+          {
+            "name": "house",
+            "in": "query",
+            "type": "string",
+            "description": "Filter characters by house."
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "type": "string",
+            "description": "Filter characters by name."
+          },
+          {
+            "name": "nickname",
+            "in": "query",
+            "type": "string",
+            "description": "Filter characters by nickname."
+          },
+          {
+            "name": "role",
+            "in": "query",
+            "type": "string",
+            "description": "Filter characters by role."
+          },
+          {
+            "name": "strength",
+            "in": "query",
+            "type": "string",
+            "description": "Filter characters by strength."
+          },
+          {
+            "name": "symbol",
+            "in": "query",
+            "type": "string",
+            "description": "Filter characters by symbol."
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "type": "integer",
+            "description": "Number of characters to return."
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "type": "integer",
+            "description": "Number of characters to skip."
+          },
+          {
+            "name": "sort_asc",
+            "in": "query",
+            "type": "string",
+            "description": "Sort characters by a specific attribute (age, animal, death, house, id, name, nickname, role, strength, symbol) in ascending order."
+          },
+          {
+            "name": "sort_desc",
+            "in": "query",
+            "type": "string",
+            "description": "Sort characters by a specific attribute (age, animal, death, house, id, name, nickname, role, strength, symbol) in descending order."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of characters.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid filter, sorting, or pagination parameter."
+          },
+          "401": {
+            "description": "Missing or invalid JWT token."
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "Add a New Character",
+        "description": "Add a new character to the Game of Thrones character list.",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Character details",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "Arya Stark"
+                },
+                "age": {
+                  "type": "integer",
+                  "example": 16
+                },
+                "house": {
+                  "type": "string",
+                  "example": "Stark"
+                },
+                "nickname": {
+                  "type": "string",
+                  "example": "No One"
+                },
+                "role": {
+                  "type": "string",
+                  "example": "Assassin"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Character successfully added."
+          },
+          "400": {
+            "description": "Invalid character details."
+          },
+          "401": {
+            "description": "Missing or invalid JWT token."
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/characters/{id}": {
+      "get": {
+        "summary": "Get Character by ID",
+        "description": "Retrieve details of a character by their ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID of the character to retrieve."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Character details retrieved."
+          },
+          "404": {
+            "description": "Character not found."
+          },
+          "401": {
+            "description": "Missing or invalid JWT token."
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "put": {
+        "summary": "Update Character",
+        "description": "Update the details of a character by their ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID of the character to update."
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Character details to update.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "animal": {
+                  "type": "string",
+                  "example": "FOX"
+                },
+                "age": {
+                  "type": "integer",
+                  "example": 76
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Character successfully updated."
+          },
+          "400": {
+            "description": "Invalid character details."
+          },
+          "404": {
+            "description": "Character not found."
+          },
+          "401": {
+            "description": "Missing or invalid JWT token."
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Delete Character",
+        "description": "Delete a character by their ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID of the character to delete."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Character successfully deleted."
+          },
+          "404": {
+            "description": "Character not found."
+          },
+          "401": {
+            "description": "Missing or invalid JWT token."
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    }
+  },
+  "securityDefinitions": {
+    "Bearer": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header",
+      "description": "JWT token for authorization, e.g., 'Bearer {token}'"
+    }
+  }
+}
