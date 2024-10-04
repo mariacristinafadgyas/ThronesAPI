@@ -175,11 +175,26 @@ localhost:5000/api/characters/51
   "message": "Character with id 51 has been deleted successfully."
 }
 ```
+## API Documentation with Swagger
+This project employs **Swagger** to offer interactive API documentation, facilitating easy visualization and testing of the API endpoints.
+
+### Accessing the Swagger UI
+- Once the application is running, you can access the Swagger UI at the following URL:
+```
+localhost:5000/api/docs/#
+```
+- **Login Requirement**: Before accessing most of the endpoints, you must first log in to obtain a JWT token.
+  - To log in, expand the User Login endpoint.
+  - Provide your username and password, then click the `Try it out` button to execute the request. If successful, you will receive a JWT token in the response.
+- **Using the Token**: 
+  - After obtaining the token, copy the token provided in the response. 
+  - For subsequent API requests, paste the token into the **Authorization** header in the format: `Bearer {your_token}`
+- Click on an endpoint to expand its details, fill in the required parameters, and click the `Try it out` button to execute the request.
+
 ## Data Storage
 - `users.json`: Stores user data (username, password, and roles).
 - `characters.json`: Stores character data from Game of Thrones (id, name, age, house, etc.).
 Both files are read from and written to using read_data() and sync_data() helper functions.
 
-
-
-Contributions are welcome! Feel free to submit issues or pull requests.
+> 🧸️ **NOTE** 🧸 <br>
+> Contributions are welcome! Feel free to submit issues or pull requests.
