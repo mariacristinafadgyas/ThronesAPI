@@ -33,7 +33,7 @@ def sync_data(file_path, characters):
 
 
 def main():
-    characters = read_data('characters.json')
+    characters = read_data('backend/characters.json')
     new_character = {
         "name": "Jon Snow",
         "age": 25,
@@ -47,7 +47,7 @@ def main():
         "symbol": "Wolf"
         }
     characters.append(new_character)
-    sync_data('characters.json', characters)
+    sync_data('backend/characters.json', characters)
 
 
 if __name__ == "__main__":
