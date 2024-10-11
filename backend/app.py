@@ -1,6 +1,7 @@
 import datetime
 from dotenv import load_dotenv
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 from flask_swagger_ui import get_swaggerui_blueprint
 from functools import wraps
 import jwt
@@ -13,10 +14,10 @@ load_dotenv()
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 app = Flask(__name__)
-
+CORS(app)  # This will enable CORS for all routes
 
 VALID_ATTRIBUTES = ['age', 'animal', 'death', 'house', 'name', 'nickname', 'role', 'strength', 'symbol']
-USERS = read_data('users.json')
+USERS = read_data(os.path.join('backend','users.json'))
 
 
 def token_required(f):
@@ -58,6 +59,28 @@ def token_required(f):
     return decorated
 
 
+@app.route('/api/register', methods=['POST'])
+def register_user():
+    """API to register a new user."""
+    users = read_data(os.path.join('backend', 'users.json'))
+    new_user = request.get_json()
+
+    username = new_user.get('username')
+    password = new_user.get('password')
+
+    if not username or not password:
+        return jsonify({"message": "Username and password are required."}), 400
+
+    if username in users:
+        return jsonify({"message": "Username already exists."}), 400
+
+    # Creates a new user entry with a default role
+    users[username] = {"password": password, "role": "user"}
+
+    sync_data(os.path.join('backend', 'users.json'), users)
+    return jsonify({"message": "User registered successfully."}), 200
+
+
 @app.route('/api/login', methods=['POST'])
 def login():
     """Login endpoint to authenticate users and return a JWT."""
@@ -91,7 +114,7 @@ def get_characters(payload):
     filters to be applied simultaneously. Additionally, characters can be sorted in
     ascending or descending order by any specified attribute."""
 
-    characters = read_data('characters.json')
+    characters = read_data(os.path.join('backend', 'characters.json'))
 
     # Filtering
     filter_params = {
@@ -201,7 +224,7 @@ def get_character_by_id(payload, character_id):
     matches the provided 'character_id'. If the character is not found,
     a 404 error is returned with an appropriate message."""
 
-    characters = read_data('characters.json')
+    characters = read_data(os.path.join('backend', 'characters.json'))
 
     for character in characters:
         if character['id'] == character_id:
@@ -216,7 +239,7 @@ def add_character(payload):
     """Adds a new character to the character list, ensuring all required fields
     are filled and have the correct data types."""
 
-    characters = read_data('characters.json')
+    characters = read_data(os.path.join('backend', 'characters.json'))
     new_character = request.get_json()  # Retrieves data from the request
 
     required_fields = {
@@ -240,7 +263,8 @@ def add_character(payload):
 
     new_character['id'] = max([char['id'] for char in characters]) + 1 if characters else 1
     characters.append(new_character)
-    sync_data('characters.json', characters)  # For in-memory saving of a new character comment this line
+    # For in-memory saving of a new character comment next line
+    sync_data(os.path.join('backend', 'characters.json'), characters)
     return jsonify(new_character), 200
 
 
@@ -250,12 +274,12 @@ def delete_character(payload, id):
     """Deletes a character based on the ID specified in the URL. If the character
      exists, it is deleted, if it does not exist, an error message is returned."""
 
-    characters = read_data('characters.json')
+    characters = read_data(os.path.join('backend', 'characters.json'))
 
     for character in characters:
         if character['id'] == id:
             characters.remove(character)
-            sync_data('characters.json', characters)
+            sync_data(os.path.join('backend', 'characters.json'), characters)
             return jsonify({"message": f"Character with id {id} has been deleted"
                                        f" successfully."}), 200
     return jsonify({"message": f"Character with id {id} not found."}), 404
@@ -268,7 +292,7 @@ def update_character(payload, id):
     found, it updates only the fields provided in the request body, leaving
     any unspecified fields unchanged. """
 
-    characters = read_data('characters.json')
+    characters = read_data(os.path.join('backend', 'characters.json'))
     data = request.get_json()
 
     required_fields = {
@@ -302,7 +326,7 @@ def update_character(payload, id):
             character['strength'] = data.get('strength', character['strength'])
             character['symbol'] = data.get('symbol', character['symbol'])
 
-            sync_data('characters.json', characters)
+            sync_data(os.path.join('backend', 'characters.json'), characters)
 
             return jsonify({"message": f"Character with id {id} has been updated "
                                        f"successfully.", "id": id}), 200
