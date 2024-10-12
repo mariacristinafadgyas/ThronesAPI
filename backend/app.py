@@ -62,7 +62,6 @@ def token_required(f):
 @app.route('/api/register', methods=['POST'])
 def register_user():
     """API to register a new user."""
-    users = read_data(os.path.join('backend', 'users.json'))
     new_user = request.get_json()
 
     username = new_user.get('username')
@@ -71,13 +70,13 @@ def register_user():
     if not username or not password:
         return jsonify({"message": "Username and password are required."}), 400
 
-    if username in users:
+    if username in USERS:
         return jsonify({"message": "Username already exists."}), 400
 
     # Creates a new user entry with a default role
-    users[username] = {"password": password, "role": "user"}
+    USERS[username] = {"password": password, "role": "user"}
 
-    sync_data(os.path.join('backend', 'users.json'), users)
+    sync_data(os.path.join('backend', 'users.json'), USERS)
     return jsonify({"message": "User registered successfully."}), 200
 
 
