@@ -26,7 +26,7 @@ document.getElementById('character-form').addEventListener('submit', function (e
     console.log('Character data being sent:', characterData); // Debugging
 
     // Send a POST request to the backend API
-    fetch('http://localhost:5000/api/characters', {
+    fetch('https://thronesapi-backend.onrender.com/api/characters', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

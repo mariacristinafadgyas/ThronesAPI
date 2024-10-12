@@ -5,7 +5,7 @@ document.getElementById('registerForm').addEventListener('submit', function(even
     const username = document.getElementById('registerUsername').value;
     const password = document.getElementById('registerPassword').value;
 
-    fetch('http://localhost:5000/api/register', {  // Backend URL
+    fetch('https://thronesapi-backend.onrender.com/api/register', {  // Backend URL
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

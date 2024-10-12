@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Fetch character pictures from the /api/characters/pictures endpoint
-    const fetchCharacterPictures = fetch('http://localhost:5001/api/characters/pictures')
+    const fetchCharacterPictures = fetch('https://thronesapi-frontend.onrender.com/api/characters/pictures')
     .then(handleUnauthorized)  // Handle expired/invalid token
     .then(response => {
         if (!response.ok) {
@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Fetch character details (age, animal, etc.) from the /api/all_characters - backend endpoint
-    const fetchCharacterDetails = fetch('http://localhost:5000/api/all_characters', {
+    const fetchCharacterDetails = fetch('https://thronesapi-backend.onrender.com/api/all_characters', {
         headers: headers  // Include the token in the request headers
     })
     .then(handleUnauthorized)  // Handle expired/invalid token
@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         house: newHouse || details.house
                     };
 
-                    fetch(`http://localhost:5000/api/characters/${details.id}`, {
+                    fetch(`https://thronesapi-backend.onrender.com/api/characters/${details.id}`, {
                         method: 'PUT',
                         headers: headers,
                         body: JSON.stringify(updatedCharacter)
@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Create delete button form
                 const deleteForm = document.createElement('form');
-                deleteForm.setAttribute('action', `http://localhost:5000/api/characters/${details.id}`);
+                deleteForm.setAttribute('action', `https://thronesapi-backend.onrender.com/api/characters/${details.id}`);
                 deleteForm.setAttribute('method', 'DELETE');
                 deleteForm.classList.add('delete-form');
 

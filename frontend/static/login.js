@@ -6,7 +6,7 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
     const password = document.getElementById('loginPassword').value;
 
     // Send request to the correct backend URL (localhost:5000)
-    fetch('http://localhost:5000/api/login', {
+    fetch('https://thronesapi-backend.onrender.com/api/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
