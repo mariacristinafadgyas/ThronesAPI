@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return response.json();
     });
 
-    // Fetch character details (age, animal, etc.) from the /api/characters - backend endpoint
+    // Fetch character details (age, animal, etc.) from the /api/all_characters - backend endpoint
     const fetchCharacterDetails = fetch('http://localhost:5000/api/all_characters', {
         headers: headers  // Include the token in the request headers
     })
@@ -55,6 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Create a dictionary from the character details for quick lookup by name
             const detailsDict = detailsData.reduce((acc, character) => {
                 acc[character.name] = {
+                    id: character.id,  // Include character ID for deletion
                     age: character.age,
                     role: character.role,
                     house: character.house
@@ -82,15 +83,54 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Create and set age
                 const ageElement = document.createElement('p');
-                ageElement.innerHTML = `<b>Age:</b> ${details.age}`;
+                ageElement.innerHTML = `<b>Age:</b> ${details.age || 'Unknown'}`;
 
                 // Create and set role
                 const roleElement = document.createElement('p');
-                roleElement.innerHTML = `<b>Role:</b> ${details.role}`;
+                roleElement.innerHTML = `<b>Role:</b> ${details.role || 'Unknown'}`;
 
                 // Create and set house
                 const houseElement = document.createElement('p');
-                houseElement.innerHTML = `<b>House:</b> ${details.house}`;
+                houseElement.innerHTML = `<b>House:</b> ${details.house || 'Unknown'}`;
+
+                // Create delete button form
+                const deleteForm = document.createElement('form');
+                deleteForm.setAttribute('action', `http://localhost:5000/api/characters/${details.id}`);
+                deleteForm.setAttribute('method', 'DELETE');
+                deleteForm.classList.add('delete-form');
+
+                const deleteButton = document.createElement('button');
+                deleteButton.classList.add('btn', 'btn-danger');
+                deleteButton.innerHTML = `<i class="fa fa-trash" aria-hidden="true"></i>`;
+
+                deleteButton.onclick = (event) => {
+                    event.preventDefault();  // Prevent default form submission
+                    const confirmed = confirm('Are you sure you want to delete this character?');
+                    if (confirmed) {
+                        fetch(deleteForm.action, {
+                            method: 'DELETE',
+                            headers: headers  // Pass token in headers
+                        })
+                        .then(handleUnauthorized)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`Failed to delete character. Status: ${response.status}`);
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            alert(data.message);  // Show success message
+                            characterCard.remove();  // Remove card from grid
+                        })
+                        .catch(error => {
+                            console.error('Error deleting character:', error);
+                            alert('Failed to delete character. Please try again.');
+                        });
+                    }
+                };
+
+                // Append delete button to the form
+                deleteForm.appendChild(deleteButton);
 
                 // Append the elements to the card
                 characterCard.appendChild(img);
@@ -98,6 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 characterCard.appendChild(ageElement);
                 characterCard.appendChild(roleElement);
                 characterCard.appendChild(houseElement);
+                characterCard.appendChild(deleteForm);
 
                 // Append the character card to the grid
                 charactersGrid.appendChild(characterCard);
