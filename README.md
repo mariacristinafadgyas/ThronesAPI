@@ -61,13 +61,47 @@ python -m unittest discover
 ```
 
 ## API Endpoints
-1. **Login**
-- Endpoint: **/login**
+1. **Register a New User**
+- Endpoint: **/api/register**
+- Method: **POST**
+- Description:  Registers a new user by adding their username and password to the `users.json` file. Each new user is assigned the default role of "user."
+- Postman example:
+```
+localhost:5000/api/register
+```
+- Request Body:
+```
+{
+  "username": "new_user",
+  "password": "password123"
+}
+```
+- Response:
+  - If successful:
+```
+{
+  "message": "User registered successfully."
+}
+```
+  - If the username already exists:
+```
+{
+   "message": "Username already exists."
+}
+```
+  - If username or password is missing:
+```
+{
+   "message": "Username and password are required."
+}
+```
+2. **Login**
+- Endpoint: **/api/login**
 - Method: **POST**
 - Description: Authenticates a user and returns a JWT token.
 - Postman example:
 ```
-localhost:5000/login
+localhost:5000/api/login
 ```
 - Request Body:
 ```
@@ -82,7 +116,7 @@ localhost:5000/login
   "token": "your_jwt_token_here"
 }
 ```
-2. **Get All Characters**
+3. **Get Characters**
 - Endpoint: **/api/characters**
 - Method: **GET**
 - Description: Retrieves all characters with optional filtering, sorting, and pagination.
@@ -99,7 +133,7 @@ You can replace your_jwt_token_here with the actual JWT token you receive from t
 ```
 localhost:5000/api/characters?limit=5&skip=10&sort_asc=age&house=Stark
 ```
-3. **Get Character by ID**
+4. **Get Character by ID**
 - Endpoint: **/api/characters/<int:character_id>**
 - Method: **GET**
 - Description: Retrieves a character by their ID.
@@ -109,7 +143,7 @@ localhost:5000/api/characters?limit=5&skip=10&sort_asc=age&house=Stark
 ```
 localhost:5000/api/characters/50
 ```
-4. **Add a New Character**
+5. **Add a New Character**
 - Endpoint: **/api/characters**
 - Method: **POST**
 - Description: Adds a new character to the list.
@@ -139,7 +173,7 @@ localhost:5000/api/characters
   ...
 }
 ```
-5. **Update a Character**
+6. **Update a Character**
 - Endpoint: /api/characters/<int:id>
 - Method: **PUT**
 - Description: Adds a new character to the list.
@@ -161,7 +195,7 @@ localhost:5000/api/characters/51
   "id": 1
 }
 ```
-6. **Delete a Character**
+7. **Delete a Character**
 - Endpoint: **/api/characters/<int:id>**
 - Method: **DELETE**
 - Description: Deletes a character by their ID.
@@ -196,5 +230,31 @@ localhost:5000/api/docs/#
 - `characters.json`: Stores character data from Game of Thrones (id, name, age, house, etc.).
 Both files are read from and written to using read_data() and sync_data() helper functions.
 
+## Frontend Features
+
+### User Registration 
+Users can create an account by providing a username and password. Upon successful registration, users can log in to access character management features.
+
+### User Login 
+The application allows users to log in using their credentials. Upon successful login, a JWT token is generated, enabling access to protected API routes.
+
+### Character Management
+- **Display Characters**: All characters are displayed on the characters page, showcasing their details and associated images.
+- **Add Character**: Users can add new characters to the database through the add character view, with input validation handled via JavaScript.
+- **Edit Character**: Logged-in users can edit existing character cards directly from the character management page. Changes are saved to the database (JSON file) upon submission.
+- **Delete Character**: Users have the ability to delete characters from the database. This action removes the character record from the JSON file, ensuring data consistency.
+
+### Installation and Running the Frontend
+1. Ensure that the backend is running on [http://localhost:5000](http://localhost:5000).
+2. Navigate to the `/frontend` directory.
+3. Start the Flask server by running:
+```
+python frontend_app.py
+```
+### User Access
+Access the frontend application in your browser at:
+```
+http://localhost:5001/
+```
 > 🧸️ **NOTE** 🧸 <br>
 > Contributions are welcome! Feel free to submit issues or pull requests.

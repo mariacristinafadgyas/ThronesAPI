@@ -11,6 +11,59 @@
     "http"
   ],
   "paths": {
+    "/register": {
+      "post": {
+        "summary": "Register a New User",
+        "description": "Registers a new user with a username and password.",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "User registration details.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "username": {
+                  "type": "string",
+                  "example": "new_user"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "password123"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User registered successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "User registered successfully."
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input or username already exists.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Username and password are required."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/login": {
       "post": {
         "summary": "User Login",
@@ -26,11 +79,11 @@
               "properties": {
                 "username": {
                   "type": "string",
-                  "example": "jane"
+                  "example": "new_user"
                 },
                 "password": {
                   "type": "string",
-                  "example": "pass456#"
+                  "example": "password123"
                 }
               }
             }
