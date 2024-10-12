@@ -107,7 +107,7 @@ def login():
 @app.route('/api/characters', methods=['GET'])
 @token_required
 def get_characters(payload):
-    """Returns a JSON file containing the list of characters from a Game of Thrones,
+    """Returns a JSON file containing the list of characters from Game of Thrones,
     supporting pagination through the 'limit' and 'skip' query parameters. If these
     parameters are not provided, a random selection of 20 characters is returned by default.
     Filtering by attributes such as age, house, and role is supported, allowing multiple
@@ -215,6 +215,16 @@ def get_characters(payload):
     paginated_characters = sorted_characters[skip:skip + limit]
 
     return jsonify(paginated_characters), 200
+
+
+@app.route('/api/all_characters', methods=['GET'])
+@token_required
+def get_all_characters(payload):
+    """Returns a JSON file containing the list of all characters from Game of Thrones."""
+
+    characters = read_data(os.path.join('backend', 'characters.json'))
+
+    return jsonify(characters), 200
 
 
 @app.route('/api/characters/<int:character_id>', methods=['GET'])

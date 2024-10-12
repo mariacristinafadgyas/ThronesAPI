@@ -1,0 +1,109 @@
+/* Reset some default browser styles */
+body, h1, h2, form {
+    margin: 0;
+    padding: 0;
+}
+
+/* Basic styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4; /* Light gray background */
+    color: #333; /* Dark text color */
+    line-height: 1.6;
+
+    /* Flexbox properties for centering content */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Center vertically */
+    align-items: center; /* Center horizontally */
+    height: 100vh; /* Full viewport height */
+    padding: 0 20px; /* Add some padding on small screens */
+}
+
+/* Centering the content */
+h1 {
+    text-align: center;
+    margin: 20px 0;
+    font-size: 2.5rem; /* Large heading */
+    color: #6a0dad; /* Purple color */
+}
+
+/* Style for the section headings */
+h2 {
+    text-align: center;
+    color: #444; /* Slightly darker gray */
+    font-size: 1.8rem; /* Slightly smaller than the main heading */
+    margin-top: 20px; /* Smaller margin for section headings */
+}
+
+/* Style for forms */
+form {
+    background: white; /* White background for forms */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    padding: 30px 20px; /* Padding around form elements */
+    max-width: 400px; /* Maximum width of the form */
+    width: 100%; /* Ensure it stretches to the full width on smaller screens */
+    box-sizing: border-box; /* Ensure padding doesn't increase width */
+    display: flex; /* Flexbox for column alignment */
+    flex-direction: column; /* Align children vertically */
+    align-items: center; /* Center all form elements horizontally */
+}
+
+/* Style for input fields */
+input[type="text"],
+input[type="password"] {
+    width: 100%; /* Full width */
+    padding: 12px; /* Padding inside input */
+    margin: 10px 0; /* Margin between inputs */
+    border: 1px solid #ccc; /* Light gray border */
+    border-radius: 4px; /* Rounded corners */
+    font-size: 1rem; /* Font size for inputs */
+    box-sizing: border-box; /* Ensures padding does not affect width */
+}
+
+/* Style for buttons */
+button {
+    background: #6a0dad; /* Purple background */
+    color: white; /* White text */
+    border: none; /* No border */
+    border-radius: 4px; /* Rounded corners */
+    padding: 12px; /* Padding inside button */
+    font-size: 1rem; /* Font size for buttons */
+    cursor: pointer; /* Pointer cursor on hover */
+    width: 100%; /* Full width for button */
+    transition: background 0.3s; /* Smooth transition for hover effect */
+    margin-top: 10px; /* Margin between inputs and button */
+}
+
+/* Button hover effect */
+button:hover {
+    background: #5a0a9d; /* Darker purple on hover */
+}
+
+/* Centering alert message */
+.alert {
+    text-align: center; /* Center alerts */
+    color: red; /* Red text for error messages */
+    margin-top: 20px; /* Space above alerts */
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+    h1 {
+        font-size: 2rem; /* Smaller font size for headings */
+    }
+
+    h2 {
+        font-size: 1.5rem; /* Smaller subheading */
+    }
+
+    form {
+        padding: 20px 15px; /* Reduce padding on smaller screens */
+    }
+
+    button, input[type="text"], input[type="password"] {
+        font-size: 0.9rem; /* Slightly smaller font size */
+        padding: 10px; /* Reduce padding */
+    }
+}

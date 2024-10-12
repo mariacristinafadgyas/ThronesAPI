@@ -1,0 +1,110 @@
+/* Basic styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4; /* Light gray background */
+    color: #333; /* Dark text color */
+    line-height: 1.6;
+}
+
+/* Centering the content */
+h1 {
+    text-align: center;
+    margin: 20px 0;
+    font-size: 2.5rem; /* Large heading */
+    color: #6a0dad; /* Purple color */
+}
+
+/* Character grid container */
+#charactersGrid {
+    display: flex;
+    flex-wrap: wrap; /* Wrap cards on new lines */
+    justify-content: center; /* Center the cards horizontally */
+    gap: 20px; /* Space between the cards */
+    width: 100%; /* Full width */
+    padding: 20px;
+    box-sizing: border-box; /* Include padding in width */
+}
+
+/* Individual character card */
+.character-card {
+    background-color: white; /* White background */
+    padding: 10px; /* Reduced padding */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    text-align: center; /* Center text inside */
+    width: 200px; /* Set fixed width */
+    height: 350px; /* Set fixed height */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Align elements to top */
+    align-items: center;
+    box-sizing: border-box; /* Include padding and border in size */
+    transition: transform 0.3s ease; /* Smooth hover effect */
+    overflow: hidden; /* Hide any overflowing content */
+}
+
+/* Hover effect to highlight card */
+.character-card:hover {
+    transform: translateY(-10px); /* Move card upwards on hover */
+}
+
+/* Character image */
+.character-image {
+    width: 100%; /* Full width of the card */
+    height: auto; /* Maintain aspect ratio */
+    border-radius: 8px; /* Rounded corners for image */
+    max-height: 180px; /* Max height for image */
+    margin-bottom: 10px; /* Add space below the image */
+}
+
+/* Character details styling */
+.character-card p {
+    margin: 3px 0; /* Reduce space between details */
+    font-size: 0.95rem; /* Slightly smaller font size */
+    color: #333; /* Default dark color */
+    text-align: center; /* Center text */
+    word-wrap: break-word; /* Break long words if needed */
+    overflow: hidden; /* Prevent overflow */
+    text-overflow: ellipsis; /* Add ellipsis if text overflows */
+}
+
+/* Highlight specific details */
+.character-card p span {
+    font-weight: bold; /* Bold text for details */
+    color: #455d7a;
+    font-size: 1.05rem; /* Slightly larger font size for labels */
+}
+
+/* Responsive design */
+@media (max-width: 1024px) {
+    #charactersGrid {
+        gap: 15px; /* Reduce gap on smaller screens */
+    }
+
+    .character-card {
+        width: 180px; /* Adjust card size */
+        height: 320px; /* Adjust card height */
+    }
+}
+
+@media (max-width: 768px) {
+    .character-card {
+        width: 160px; /* Smaller card size for tablet */
+        height: 300px;
+    }
+}
+
+@media (max-width: 600px) {
+    #charactersGrid {
+        justify-content: center;
+    }
+
+    .character-card {
+        width: 100%; /* Full width for mobile */
+        height: auto; /* Auto height on mobile */
+    }
+
+    .character-image {
+        max-height: 100px; /* Smaller image on mobile */
+    }
+}
