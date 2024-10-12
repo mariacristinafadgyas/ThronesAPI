@@ -74,7 +74,13 @@ def register_user():
         return jsonify({"message": "Username already exists."}), 400
 
     # Creates a new user entry with a default role
-    USERS[username] = {"password": password, "role": "user"}
+    # USERS[username] = {"password": password, "role": "user"}
+    USERS.update({
+        username: {
+            "password": password,
+            "role": "user"
+        }
+    })
 
     sync_data(os.path.join('backend', 'users.json'), USERS)
     return jsonify({"message": "User registered successfully."}), 200
