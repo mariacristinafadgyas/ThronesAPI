@@ -93,6 +93,52 @@ document.addEventListener('DOMContentLoaded', () => {
                 const houseElement = document.createElement('p');
                 houseElement.innerHTML = `<b>House:</b> ${details.house || 'Unknown'}`;
 
+                // Create edit button form
+                const editForm = document.createElement('form');
+                editForm.classList.add('edit-form');
+
+                const editButton = document.createElement('button');
+                editButton.classList.add('btn', 'btn-primary');
+                editButton.innerHTML = `<i class="fa fa-pencil" aria-hidden="true"></i>`;
+
+                editButton.onclick = () => {
+                    const newName = prompt('Enter new name:', character.name);
+                    const newAge = prompt('Enter new age:', details.age);
+                    const newRole = prompt('Enter new role:', details.role);
+                    const newHouse = prompt('Enter new house:', details.house);
+
+                    const updatedCharacter = {
+                        name: newName || character.name,
+                        age: parseInt(newAge) || details.age,
+                        role: newRole || details.role,
+                        house: newHouse || details.house
+                    };
+
+                    fetch(`http://localhost:5000/api/characters/${details.id}`, {
+                        method: 'PUT',
+                        headers: headers,
+                        body: JSON.stringify(updatedCharacter)
+                    })
+                        .then(handleUnauthorized)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`Failed to update character. Status: ${response.status}`);
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            alert(data.message);
+                            name.innerHTML = `<b>Name:</b> <span>${updatedCharacter.name}</span>`;
+                            ageElement.innerHTML = `<b>Age:</b> ${updatedCharacter.age}`;
+                            roleElement.innerHTML = `<b>Role:</b> ${updatedCharacter.role}`;
+                            houseElement.innerHTML = `<b>House:</b> ${updatedCharacter.house}`;
+                        })
+                        .catch(error => {
+                            console.error('Error updating character:', error);
+                            alert('Failed to update character. Please try again.');
+                        });
+                };
+
                 // Create delete button form
                 const deleteForm = document.createElement('form');
                 deleteForm.setAttribute('action', `http://localhost:5000/api/characters/${details.id}`);
@@ -129,8 +175,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 };
 
-                // Append delete button to the form
-                deleteForm.appendChild(deleteButton);
+                // Create a button group container for edit and delete buttons
+                const buttonGroup = document.createElement('div');
+                buttonGroup.classList.add('button-group');
+
+                // Append delete and edit button to the group
+                buttonGroup.appendChild(editButton);
+                buttonGroup.appendChild(deleteButton);
 
                 // Append the elements to the card
                 characterCard.appendChild(img);
@@ -138,7 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 characterCard.appendChild(ageElement);
                 characterCard.appendChild(roleElement);
                 characterCard.appendChild(houseElement);
-                characterCard.appendChild(deleteForm);
+                characterCard.appendChild(buttonGroup);
 
                 // Append the character card to the grid
                 charactersGrid.appendChild(characterCard);

@@ -76,8 +76,18 @@ h1 {
     font-size: 1.05rem; /* Slightly larger font size for labels */
 }
 
-/* Styling for the delete button */
-.delete-form .btn-danger {
+/* Button group for edit and delete buttons */
+.button-group {
+    position: absolute; /* Position it at the bottom */
+    right: 10px; /* Align to the right */
+    bottom: 10px; /* Align to the bottom */
+    display: flex; /* Flexbox to align buttons side by side */
+    gap: 0px; /* Add spacing between the buttons */
+}
+
+/* Styling for the delete and edit buttons */
+.btn-danger,
+.btn-primary {
     background-color: #fff;
     border: none;
     color: #455d7a;
@@ -87,12 +97,10 @@ h1 {
     cursor: pointer;
     font-size: 0.85rem;
     transition: background-color 0.3s ease;
-    position: absolute; /* Absolute positioning */
-    right: 10px; /* Align to the right */
-    bottom: 10px; /* Align to the bottom */
 }
 
-.delete-form .btn-danger:hover {
+.btn-danger:hover,
+.btn-primary:hover {
     background-color: #e3e3e3;
 }
 
