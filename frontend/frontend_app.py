@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, url_for
+from flask import Flask, render_template, jsonify, url_for, request
 from backend.storage import read_data
 import os
 import requests
@@ -32,8 +32,24 @@ def characters():
 def get_characters_pictures():
     """API route to fetch Game of Thrones characters images."""
     try:
+        # Retrieve the token from the Authorization header of the frontend request
+        token = request.headers.get('Authorization')
+
+        if not token:
+            return jsonify({'message': 'Token is missing!'}), 401
+
+        # Set up headers with the token for the backend API call
+        headers = {
+            'Authorization': token  # Pass token in the backend API request
+        }
+
         # Fetch characters from local backend (characters.json)
-        local_characters = read_data(os.path.join('..', 'backend', 'characters.json'))
+        # local_characters = read_data(os.path.join('..', 'backend', 'characters.json'))  -> works with localhost
+        res = requests.get('https://thronesapi-backend.onrender.com/api/all_characters', headers=headers)
+        if res.status_code != 200:
+            return jsonify({'message': 'Failed to fetch characters from backend.'}), res.status_code
+
+        local_characters = res.json()
 
         # Fetch character images from external ThronesAPI
         response = requests.get(THRONES_API_URL)
