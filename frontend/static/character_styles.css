@@ -103,6 +103,34 @@ h1 {
 .btn-primary:hover {
     background-color: #e3e3e3;
 }
+/* Style for the Add Character button to be aligned right and remove underline */
+#add_button {
+    background: #6a0dad; /* Purple background */
+    color: white; /* White text */
+    border: none; /* No border */
+    border-radius: 4px; /* Rounded corners */
+    padding: 10px 15px; /* Padding inside button */
+    font-size: 1rem; /* Font size for buttons */
+    cursor: pointer; /* Pointer cursor on hover */
+    width: auto; /* Auto width to fit the text */
+    transition: background 0.3s; /* Smooth transition for hover effect */
+    text-align: right; /* Align the button to the right */
+    float: right; /* Float it to the right */
+    margin: 20px 20px 0 0; /* Add margin to position it away from the edges */
+    text-decoration: none; /* Ensure no underline */
+}
+
+/* Remove underline from anchor inside the button */
+#add_button a {
+    color: white; /* White text */
+    text-decoration: none; /* Remove underline */
+}
+
+/* Home button hover effect */
+#add_button:hover {
+    background: #5a0a9d; /* Darker purple on hover */
+}
+
 
 /* Responsive design */
 @media (max-width: 1024px) {

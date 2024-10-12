@@ -12,6 +12,8 @@
 <body>
     <h1>Game of Thornes Characters</h1>
 
+    <a href="{{ url_for('add_character_view') }}" id="add_button" class="button">Add Character</a>
+
     <div id="charactersGrid"></div>
 
     <script src="{{ url_for('static', filename='characters.js') }}"></script>

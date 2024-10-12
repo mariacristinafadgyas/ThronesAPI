@@ -64,5 +64,10 @@ def get_characters_pictures():
         return jsonify({"error": str(e)}), 500
 
 
+@app.route('/add_character_view', methods=['GET', 'POST'])
+def add_character_view():
+    return render_template('add_character_view.html')
+
+
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5001, debug=True)

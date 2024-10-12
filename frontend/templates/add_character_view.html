@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Add Character</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='add_char_styles.css') }}">
+</head>
+<body>
+
+    <div class="button-container">
+        <button class="home">
+            <a href="{{ url_for('characters') }}" class="button-link">Home</a>
+        </button>
+    </div>
+
+    <h2>Add a new character</h2>
+    <div class="form-container">
+        <form id="character-form">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="age">Age:</label>
+                <input type="number" id="age" name="age">
+            </div>
+
+            <div class="form-group">
+                <label for="animal">Animal:</label>
+                <input type="text" id="animal" name="animal">
+            </div>
+
+            <div class="form-group">
+                <label for="death">Death:</label>
+                <input type="text" id="death" name="death">
+            </div>
+
+            <div class="form-group">
+                <label for="house">House:</label>
+                <input type="text" id="house" name="house">
+            </div>
+
+            <div class="form-group">
+                <label for="nickname">Nickname:</label>
+                <input type="text" id="nickname" name="nickname">
+            </div>
+
+            <div class="form-group">
+                <label for="role">Role:</label>
+                <input type="text" id="role" name="role">
+            </div>
+
+            <div class="form-group">
+                <label for="strength">Strength:</label>
+                <input type="text" id="strength" name="strength">
+            </div>
+
+            <div class="form-group">
+                <label for="symbol">Symbol:</label>
+                <input type="text" id="symbol" name="symbol">
+            </div>
+
+            <button type="submit">Add Character</button><br><br>
+        </form>
+    </div>
+
+    <script src="{{ url_for('static', filename='add_char.js') }}"></script>
+</body>
+</html>

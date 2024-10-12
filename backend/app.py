@@ -252,6 +252,8 @@ def add_character(payload):
     characters = read_data(os.path.join('backend', 'characters.json'))
     new_character = request.get_json()  # Retrieves data from the request
 
+    # print("Received data:", new_character)  # Log the incoming request
+
     required_fields = {
         'name': str,
         'age': int,
