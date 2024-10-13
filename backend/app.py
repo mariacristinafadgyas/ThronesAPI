@@ -18,7 +18,6 @@ app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}}, allow_headers=['Authorization', 'Content-Type'])
 
 VALID_ATTRIBUTES = ['age', 'animal', 'death', 'house', 'name', 'nickname', 'role', 'strength', 'symbol']
-USERS = read_data(os.path.join('backend','users.json'))
 
 
 def token_required(f):
@@ -63,6 +62,9 @@ def token_required(f):
 @app.route('/api/register', methods=['POST'])
 def register_user():
     """API to register a new user."""
+    # Modified to be a local variable intead of a global variable
+    users = read_data(os.path.join('backend', 'users.json'))
+
     new_user = request.get_json()
 
     username = new_user.get('username')
@@ -71,35 +73,38 @@ def register_user():
     if not username or not password:
         return jsonify({"message": "Username and password are required."}), 400
 
-    if username in USERS:
+    if username in users:
         return jsonify({"message": "Username already exists."}), 400
 
     # Creates a new user entry with a default role
-    # USERS[username] = {"password": password, "role": "user"}
-    USERS.update({
+    # users[username] = {"password": password, "role": "user"}
+    users.update({
         username: {
             "password": password,
             "role": "user"
         }
     })
 
-    sync_data(os.path.join('backend', 'users.json'), USERS)
+    sync_data(os.path.join('backend', 'users.json'), users)
     return jsonify({"message": "User registered successfully."}), 200
 
 
 @app.route('/api/login', methods=['POST'])
 def login():
     """Login endpoint to authenticate users and return a JWT."""
+    # Modified to be a local variable intead of a global variable
+    users = read_data(os.path.join('backend', 'users.json'))
+
     auth_data = request.get_json()
 
     username = auth_data.get('username')
     password = auth_data.get('password')
 
-    if username in USERS and USERS[username]['password'] == password:
+    if username in users and users[username]['password'] == password:
         # JWT payload creation
         payload = {
             'username': username,
-            'role': USERS[username]['role'],
+            'role': users[username]['role'],
             'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1)  # Token expires in 1 hour
         }
 
