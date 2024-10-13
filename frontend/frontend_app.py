@@ -44,6 +44,7 @@ def get_characters_pictures():
         # Fetch characters from local backend (characters.json)
         # local_characters = read_data(os.path.join('..', 'backend', 'characters.json'))  -> works with localhost
         res = requests.get('https://thronesapi-backend.onrender.com/api/all_characters', headers=headers)
+        # print(f"Character API Response Status: {res.status_code}")
         if res.status_code != 200:
             return jsonify({'message': 'Failed to fetch characters from backend.'}), res.status_code
 
@@ -51,6 +52,7 @@ def get_characters_pictures():
 
         # Fetch character images from external ThronesAPI
         response = requests.get(THRONES_API_URL)
+        # print(f"ThronesAPI Response Status: {response.status_code}")
         response.raise_for_status()  # Raises an error if the request fails
         external_characters = response.json()
 

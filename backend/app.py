@@ -14,7 +14,8 @@ load_dotenv()
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 app = Flask(__name__)
-CORS(app)  # This will enable CORS for all routes
+# This will enable CORS for all routes
+CORS(app, resources={r"/*": {"origins": "*"}}, allow_headers=['Authorization', 'Content-Type'])
 
 VALID_ATTRIBUTES = ['age', 'animal', 'death', 'house', 'name', 'nickname', 'role', 'strength', 'symbol']
 USERS = read_data(os.path.join('backend','users.json'))

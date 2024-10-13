@@ -1,3 +1,5 @@
+//const deployedUrl = 'https://thronesapi-frontend.onrender.com/api'
+//const deployedUrl = 'http://localhost:5000/api'
 document.addEventListener('DOMContentLoaded', () => {
     const charactersGrid = document.getElementById('charactersGrid');
 
@@ -28,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Fetch character pictures from the /api/characters/pictures endpoint
-    const fetchCharacterPictures = fetch('https://thronesapi-frontend.onrender.com/api/characters/pictures')
+    const fetchCharacterPictures = fetch('https://thronesapi-frontend.onrender.com/api/characters/pictures', { headers })
     .then(handleUnauthorized)  // Handle expired/invalid token
     .then(response => {
         if (!response.ok) {
