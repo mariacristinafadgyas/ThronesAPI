@@ -68,10 +68,10 @@ def register_user():
         users = read_data(os.path.join('backend', 'users.json'))
     except FileNotFoundError:
         print("users.json file not found")
-        USERS = {}
+        users = {}
     except json.JSONDecodeError:
         print("users.json is not a valid JSON file")
-        USERS = {}
+        users = {}
 
     new_user = request.get_json()
 
@@ -102,13 +102,13 @@ def login():
     """Login endpoint to authenticate users and return a JWT."""
     # Modified to be a local variable intead of a global variable
     try:
-        USERS = read_data(os.path.join('backend', 'users.json'))
+        users = read_data(os.path.join('backend', 'users.json'))
     except FileNotFoundError:
         print("users.json file not found")
-        USERS = {}
+        users = {}
     except json.JSONDecodeError:
         print("users.json is not a valid JSON file")
-        USERS = {}
+        users = {}
 
     auth_data = request.get_json()
 
