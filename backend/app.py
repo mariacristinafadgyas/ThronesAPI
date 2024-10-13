@@ -4,6 +4,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_swagger_ui import get_swaggerui_blueprint
 from functools import wraps
+import json
 import jwt
 import os
 import random
@@ -63,7 +64,14 @@ def token_required(f):
 def register_user():
     """API to register a new user."""
     # Modified to be a local variable intead of a global variable
-    users = read_data(os.path.join('backend', 'users.json'))
+    try:
+        users = read_data(os.path.join('backend', 'users.json'))
+    except FileNotFoundError:
+        print("users.json file not found")
+        USERS = {}
+    except json.JSONDecodeError:
+        print("users.json is not a valid JSON file")
+        USERS = {}
 
     new_user = request.get_json()
 
@@ -93,7 +101,14 @@ def register_user():
 def login():
     """Login endpoint to authenticate users and return a JWT."""
     # Modified to be a local variable intead of a global variable
-    users = read_data(os.path.join('backend', 'users.json'))
+    try:
+        USERS = read_data(os.path.join('backend', 'users.json'))
+    except FileNotFoundError:
+        print("users.json file not found")
+        USERS = {}
+    except json.JSONDecodeError:
+        print("users.json is not a valid JSON file")
+        USERS = {}
 
     auth_data = request.get_json()
 
