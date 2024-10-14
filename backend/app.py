@@ -128,7 +128,7 @@ def get_characters(payload):
     filters to be applied simultaneously. Additionally, characters can be sorted in
     ascending or descending order by any specified attribute."""
 
-    characters = read_data(os.path.join('backend', 'characters.json'))
+    characters = read_data('characters.json')
 
     # Filtering
     filter_params = {
@@ -236,7 +236,7 @@ def get_characters(payload):
 def get_all_characters(payload):
     """Returns a JSON file containing the list of all characters from Game of Thrones."""
 
-    characters = read_data(os.path.join('backend', 'characters.json'))
+    characters = read_data('characters.json')
 
     return jsonify(characters), 200
 
@@ -248,7 +248,7 @@ def get_character_by_id(payload, character_id):
     matches the provided 'character_id'. If the character is not found,
     a 404 error is returned with an appropriate message."""
 
-    characters = read_data(os.path.join('backend', 'characters.json'))
+    characters = read_data('characters.json')
 
     for character in characters:
         if character['id'] == character_id:
@@ -263,7 +263,7 @@ def add_character(payload):
     """Adds a new character to the character list, ensuring all required fields
     are filled and have the correct data types."""
 
-    characters = read_data(os.path.join('backend', 'characters.json'))
+    characters = read_data('characters.json')
     new_character = request.get_json()  # Retrieves data from the request
 
     # print("Received data:", new_character)  # Log the incoming request
@@ -300,7 +300,7 @@ def delete_character(payload, id):
     """Deletes a character based on the ID specified in the URL. If the character
      exists, it is deleted, if it does not exist, an error message is returned."""
 
-    characters = read_data(os.path.join('backend', 'characters.json'))
+    characters = read_data('characters.json')
 
     for character in characters:
         if character['id'] == id:
@@ -318,7 +318,7 @@ def update_character(payload, id):
     found, it updates only the fields provided in the request body, leaving
     any unspecified fields unchanged. """
 
-    characters = read_data(os.path.join('backend', 'characters.json'))
+    characters = read_data('characters.json')
     data = request.get_json()
 
     required_fields = {
