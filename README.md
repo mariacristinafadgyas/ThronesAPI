@@ -225,6 +225,13 @@ localhost:5000/api/docs/#
   - For subsequent API requests, paste the token into the **Authorization** header in the format: `Bearer {your_token}`
 - Click on an endpoint to expand its details, fill in the required parameters, and click the `Try it out` button to execute the request.
 
+### Accessing Swagger UI Without Running the App
+You can view the Swagger documentation directly, without needing to run the app, by visiting:
+```
+https://thronesapi-backend.onrender.com/api/docs/#/
+```
+> 🛎️ **NOTE** 🛎️ <br>
+> The app is hosted on a free Render account, so it may experience delays of up to 50 seconds or more due to spin-down after periods of inactivity.
 ## Data Storage
 - `users.json`: Stores user data (username, password, and roles).
 - `characters.json`: Stores character data from Game of Thrones (id, name, age, house, etc.).
@@ -256,5 +263,15 @@ Access the frontend application in your browser at:
 ```
 http://localhost:5001/
 ```
+## Live Deployments
+The application has been deployed on `Render`, with separate services for the backend and frontend. You can access both live sites at the following URLs:
+
+- **Frontend** (Character Management UI): <br>
+https://thronesapi-frontend.onrender.com/ <br>
+This is where users can register, log in, view, edit, and delete Game of Thrones characters.
+
+- **Backend** (API for Characters and Users): <br>
+https://thronesapi-backend.onrender.com/api/all_characters <br>
+This serves the API routes, including character management and authentication.
 > 🧸️ **NOTE** 🧸 <br>
 > Contributions are welcome! Feel free to submit issues or pull requests.
