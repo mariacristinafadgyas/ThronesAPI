@@ -63,15 +63,9 @@ def token_required(f):
 @app.route('/api/register', methods=['POST'])
 def register_user():
     """API to register a new user."""
+
     # Modified to be a local variable intead of a global variable
-    try:
-        users = read_data(os.path.join('backend', 'users.json'))
-    except FileNotFoundError:
-        print("users.json file not found")
-        users = {}
-    except json.JSONDecodeError:
-        print("users.json is not a valid JSON file")
-        users = {}
+    users = read_data('users.json')
 
     new_user = request.get_json()
 
@@ -100,15 +94,9 @@ def register_user():
 @app.route('/api/login', methods=['POST'])
 def login():
     """Login endpoint to authenticate users and return a JWT."""
-    # Modified to be a local variable intead of a global variable
-    try:
-        users = read_data(os.path.join('backend', 'users.json'))
-    except FileNotFoundError:
-        print("users.json file not found")
-        users = {}
-    except json.JSONDecodeError:
-        print("users.json is not a valid JSON file")
-        users = {}
+
+    # Modified to be a local variable instead of a global variable
+    users = read_data('users.json')
 
     auth_data = request.get_json()
 
