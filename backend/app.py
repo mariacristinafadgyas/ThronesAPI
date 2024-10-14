@@ -87,7 +87,7 @@ def register_user():
         }
     })
 
-    sync_data(os.path.join('backend', 'users.json'), users)
+    sync_data('users.json', users)
     return jsonify({"message": "User registered successfully."}), 200
 
 
@@ -290,7 +290,7 @@ def add_character(payload):
     new_character['id'] = max([char['id'] for char in characters]) + 1 if characters else 1
     characters.append(new_character)
     # For in-memory saving of a new character comment next line
-    sync_data(os.path.join('backend', 'characters.json'), characters)
+    sync_data('characters.json', characters)
     return jsonify(new_character), 200
 
 
@@ -305,7 +305,7 @@ def delete_character(payload, id):
     for character in characters:
         if character['id'] == id:
             characters.remove(character)
-            sync_data(os.path.join('backend', 'characters.json'), characters)
+            sync_data('characters.json', characters)
             return jsonify({"message": f"Character with id {id} has been deleted"
                                        f" successfully."}), 200
     return jsonify({"message": f"Character with id {id} not found."}), 404
@@ -352,7 +352,7 @@ def update_character(payload, id):
             character['strength'] = data.get('strength', character['strength'])
             character['symbol'] = data.get('symbol', character['symbol'])
 
-            sync_data(os.path.join('backend', 'characters.json'), characters)
+            sync_data('characters.json', characters)
 
             return jsonify({"message": f"Character with id {id} has been updated "
                                        f"successfully.", "id": id}), 200
