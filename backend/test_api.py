@@ -1,6 +1,6 @@
 import unittest
 import json
-from app import app
+from .app import app
 import jwt
 import os
 from datetime import datetime, timedelta
@@ -30,14 +30,14 @@ class APITestCases(unittest.TestCase):
 
     def test_login_success(self):
         """Test login success with correct credentials"""
-        response = self.app.post('/login', json={'username': 'maria', 'password': 'pass123#'})
+        response = self.app.post('/api/login', json={'username': 'maria', 'password': 'pass123#'})
         data = json.loads(response.data)
         self.assertEqual(response.status_code, 200)
         self.assertIn('token', data)
 
     def test_login_failure(self):
         """Test login failure with wrong credentials"""
-        response = self.app.post('/login', json={'username': 'admin', 'password': 'wrongpassword'})
+        response = self.app.post('/api/login', json={'username': 'betty', 'password': 'betty345#'})
         data = json.loads(response.data)
         self.assertEqual(response.status_code, 401)
         self.assertEqual(data['message'], 'Invalid username or password')

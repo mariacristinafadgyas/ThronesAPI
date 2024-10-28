@@ -7,12 +7,12 @@ This project is a Flask-based **REST API** for managing a collection of characte
 
 - Protected routes require a valid JWT token in the request header.
 - Tokens are generated during login and are valid for 1 hour.
-- 
+
 2. **CRUD Operations**:
 
 - **Create**: Add new characters to the database.
 - **Read**: Retrieve characters with optional filtering, sorting, and pagination.
-- **Update**: Modify existing character details.
+- **Update**: Modify existing character details by their ID.
 - **Delete**: Remove characters by their ID.
 
 3. **Filtering and Sorting**: 
